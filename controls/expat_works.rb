@@ -10,8 +10,6 @@ control 'core-plans-expat-works' do
   Verify expat by ensuring that
   (1) its installation directory exists 
   (2) it returns the expected version
-  (3) it successfully parses valid xml <doc>One</doc> 
-  (4) it reports an error for invalid xml <doc>Two<doc>
   '
   
   plan_installation_directory = command("hab pkg path #{plan_origin}/#{plan_name}")
@@ -28,19 +26,6 @@ control 'core-plans-expat-works' do
     its('exit_status') { should eq 0 }
     its('stdout') { should_not be_empty }
     its('stdout') { should match /xmlwf using expat_#{plan_pkg_version}/ }
-    its('stderr') { should be_empty }
-  end
-
-  describe bash("#{command_full_path} < <(echo '<doc>One</doc>')") do
-    its('exit_status') { should eq 0 }
-    its('stdout') { should be_empty }
-    its('stderr') { should be_empty }
-  end
-
-  describe bash("#{command_full_path} < <(echo '<doc>Two<doc>')") do
-    its('exit_status') { should eq 0 }
-    its('stdout') { should_not be_empty }
-    its('stdout') { should match /no element found/ }
     its('stderr') { should be_empty }
   end
 end
